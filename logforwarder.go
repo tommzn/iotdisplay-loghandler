@@ -12,13 +12,13 @@ func newLogForwarder(logger log.Logger) *LogForwarder {
 }
 
 // ForwardLogMessage will send passed message to ued log target.
-func (forwarder *LogForwarder) ForwardLogMessage(ctx context.Context, message, logLevelAsString, clientId string) {
+func (forwarder *LogForwarder) ForwardLogMessage(ctx context.Context, logMessage LogMessage) {
 
 	forwarder.logger.WithContext(ctx)
-	logger := log.AppendContextValues(forwarder.logger, logContext(clientId))
+	logger := log.AppendContextValues(forwarder.logger, logContext(logMessage.ThingName))
 	defer logger.Flush()
 
-	logger.Log(log.LogLevelByName(logLevelAsString), message)
+	logger.Log(log.LogLevelByName(logMessage.LogLevel), logMessage.Message)
 }
 
 // logContext creates a log context map with given topic and cloent id.

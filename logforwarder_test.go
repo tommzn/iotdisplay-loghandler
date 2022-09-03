@@ -23,8 +23,12 @@ func (suite *LogForwarderTestSuite) TestLogContext() {
 func (suite *LogForwarderTestSuite) TestMessageForwarding() {
 
 	logForwarder := newLogForwarder(loggerForTest())
-
-	logForwarder.ForwardLogMessage(context.Background(), "log-message", "info", "aws-iot-client-id")
+	logMessage := LogMessage{
+		Message:   "log-message",
+		LogLevel:  "info",
+		ThingName: "aws-iot-client-id",
+	}
+	logForwarder.ForwardLogMessage(context.Background(), logMessage)
 }
 
 func (suite *LogForwarderTestSuite) TestBootstrap() {
