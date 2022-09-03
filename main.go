@@ -46,6 +46,5 @@ func newSecretsManager() secrets.SecretsManager {
 
 // newLogger creates a new logger from  passed config.
 func newLogger(conf config.Config, secretsMenager secrets.SecretsManager) log.Logger {
-	logger := log.NewLoggerFromConfig(conf, secretsMenager)
-	return log.WithNameSpace(logger, "iot-display")
+	return log.NewLoggerFromConfig(conf, secretsMenager)
 }

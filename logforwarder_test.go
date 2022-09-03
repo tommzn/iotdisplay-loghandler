@@ -16,8 +16,8 @@ func TestLogForwarderTestSuite(t *testing.T) {
 
 func (suite *LogForwarderTestSuite) TestLogContext() {
 
-	logContextMap := logContext("client.id")
-	suite.Len(logContextMap, 1)
+	logContextMap := getLogContextValues("client.id")
+	suite.Len(logContextMap, 2)
 }
 
 func (suite *LogForwarderTestSuite) TestMessageForwarding() {

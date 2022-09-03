@@ -15,15 +15,16 @@ func newLogForwarder(logger log.Logger) *LogForwarder {
 func (forwarder *LogForwarder) ForwardLogMessage(ctx context.Context, logMessage LogMessage) {
 
 	forwarder.logger.WithContext(ctx)
-	logger := log.AppendContextValues(forwarder.logger, logContext(logMessage.ThingName))
+	logger := log.AppendContextValues(forwarder.logger, getLogContextValues(logMessage.ThingName))
 	defer logger.Flush()
 
 	logger.Log(log.LogLevelByName(logMessage.LogLevel), logMessage.Message)
 }
 
 // logContext creates a log context map with given topic and cloent id.
-func logContext(clientId string) map[string]string {
+func getLogContextValues(clientId string) map[string]string {
 	values := make(map[string]string)
 	values["clientid"] = clientId
+	values[log.LogCtxNamespace] = "iot-display"
 	return values
 }
