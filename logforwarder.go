@@ -14,17 +14,16 @@ func newLogForwarder(logger log.Logger) *LogForwarder {
 // ForwardLogMessage will send passed message to ued log target.
 func (forwarder *LogForwarder) ForwardLogMessage(ctx context.Context, logMessage LogMessage) {
 
-	forwarder.logger.WithContext(ctx)
-	logger := log.AppendContextValues(forwarder.logger, getLogContextValues(logMessage.ThingName))
+	logger := forwarder.loggerWithContext(ctx, logMessage.ThingName)
 	defer logger.Flush()
 
 	logger.Log(log.LogLevelByName(logMessage.LogLevel), logMessage.Message)
 }
 
-// logContext creates a log context map with given topic and cloent id.
-func getLogContextValues(clientId string) map[string]string {
-	values := make(map[string]string)
-	values["clientid"] = clientId
-	values[log.LogCtxNamespace] = "iot-display"
-	return values
+// loggerWithContext creates a log context map with given client id and some lambda context values.
+func (forwarder *LogForwarder) loggerWithContext(ctx context.Context, clientId string) log.Logger {
+	contextValues := make(map[string]string)
+	contextValues["clientid"] = clientId
+	contextValues[log.LogCtxNamespace] = "iot-display"
+	return log.AppendFromLambdaContext(log.AppendContextValues(forwarder.logger, contextValues), ctx)
 }
